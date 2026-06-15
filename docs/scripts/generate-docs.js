@@ -181,7 +181,9 @@ function titleBlock(title, subtitle, meta) {
 
 function buildRequirementsDoc() {
   const children = [
-    ...titleBlock('CRM Application', 'Requirements Document', 'Version 1.0  ·  2026-06-11  ·  Status: Draft'),
+    ...titleBlock('CRM Application', 'Requirements Document', 'Version 1.1  ·  2026-06-15  ·  Status: Draft — synced with implementation'),
+
+    body('Sync note (2026-06-15): Sections 3.3, 3.2 (CON-03), 3.5 (ACT-04), and the permissions matrix have been updated to reflect the current implementation. Items deferred to a future release are marked "Deferred".', { italic: true, color: GREY }),
 
     h1('1. Executive Summary'),
     body('A web-based Customer Relationship Management (CRM) system for small teams (2–10 users), designed for desktop browsers. The system centralises contact management, sales pipeline tracking, activity logging, and task management in a single application secured by role-based authentication.'),
@@ -222,7 +224,7 @@ function buildRequirementsDoc() {
       [
         ['CON-01', 'Create a Contact: first name, last name, email, phone, job title, company, owner, tags', 'Must Have'],
         ['CON-02', 'Edit any field on a Contact', 'Must Have'],
-        ['CON-03', 'Delete a Contact (soft delete; preserves linked activities/tasks)', 'Must Have'],
+        ['CON-03', 'Delete a Contact. This is a hard delete: the Contact record and any directly-linked Activities are removed; linked Tasks are preserved with their Contact reference cleared', 'Must Have'],
         ['CON-04', 'Search Contacts by name, email, or company with real-time filtering (debounced 300 ms)', 'Must Have'],
         ['CON-05', 'Filter Contacts by tag', 'Should Have'],
         ['CON-06', 'Contacts list is paginated (default 20 per page)', 'Must Have'],
@@ -235,12 +237,13 @@ function buildRequirementsDoc() {
     ),
 
     h2('3.3 Companies'),
+    body('Implementation note: Companies are implemented as a read-only lookup (id + name) used to populate the company picker on the Contact form (CON-08). Full company management (extended fields, create/edit/delete, detail view) is deferred to a future release.', { italic: true, color: GREY }),
     styledTable(
       ['ID', 'Requirement', 'Priority'],
       [
-        ['COM-01', 'Create a Company: name, industry, website, phone, billing address', 'Must Have'],
-        ['COM-02', 'Edit and delete a Company', 'Must Have'],
-        ['COM-03', 'Company detail view lists all associated Contacts', 'Should Have'],
+        ['COM-01', 'The system maintains a list of Companies (name) that Users can select when creating or editing a Contact', 'Must Have'],
+        ['COM-02', 'Deferred — Create, edit, and delete a Company (with industry, website, phone, billing address)', 'Future'],
+        ['COM-03', 'Deferred — Company detail view lists all associated Contacts', 'Future'],
       ],
       [1200, 6800, 1500]
     ),
@@ -268,7 +271,7 @@ function buildRequirementsDoc() {
         ['ACT-01', 'Log an Activity of type: Call, Email, Meeting, Note', 'Must Have'],
         ['ACT-02', 'Activity fields: type, subject, body/notes, date/time, linked contact, linked deal, author', 'Must Have'],
         ['ACT-03', 'Activities displayed as a chronological feed per Contact or Deal', 'Must Have'],
-        ['ACT-04', 'Edit and delete own Activities', 'Must Have'],
+        ['ACT-04', 'Delete an Activity. (Editing an existing Activity, and restricting deletion to the Activity\'s author, are deferred to a future release.)', 'Must Have'],
         ['ACT-05', 'Global activity feed across all contacts/deals (paginated)', 'Should Have'],
       ],
       [1200, 6800, 1500]
@@ -370,7 +373,8 @@ function buildRequirementsDoc() {
         ['Login / Logout', 'Yes', 'Yes'],
         ['View / Edit own profile', 'Yes', 'Yes'],
         ['Create / Edit / Delete contacts', 'Yes', 'Yes'],
-        ['Create / Edit / Delete companies', 'Yes', 'Yes'],
+        ['View companies (lookup list)', 'Yes', 'Yes'],
+        ['Create / Edit / Delete companies (Deferred — COM-02)', '—', '—'],
         ['Create / Edit / Delete deals', 'Yes', 'Yes'],
         ['Create / Edit / Delete activities', 'Yes', 'Yes'],
         ['Create / Edit / Delete tasks', 'Yes', 'Yes'],
