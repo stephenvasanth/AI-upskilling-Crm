@@ -1,9 +1,13 @@
 # CRM Application — Requirements Document
 
-**Version:** 1.0  
-**Date:** 2026-06-11  
+**Version:** 1.1  
+**Date:** 2026-06-15  
 **Author:** Architect  
-**Status:** Draft
+**Status:** Draft — synced with implementation
+
+> **Sync note (2026-06-15):** Sections 3.3, 3.2 (CON-03), 3.5 (ACT-04), and the
+> permissions matrix have been updated to reflect the current implementation.
+> Items deferred to a future release are marked *Deferred*.
 
 ---
 
@@ -44,7 +48,7 @@ A web-based Customer Relationship Management (CRM) system for small teams (2–1
 |----|-------------|----------|
 | CON-01 | Users can create a Contact with: first name, last name, email, phone, job title, company, owner, tags | Must Have |
 | CON-02 | Users can edit any field on a Contact | Must Have |
-| CON-03 | Users can delete a Contact (soft delete; preserves linked activities/tasks) | Must Have |
+| CON-03 | Users can delete a Contact. This is a hard delete: the Contact record and any directly-linked Activities are removed; linked Tasks are preserved with their Contact reference cleared | Must Have |
 | CON-04 | Users can search Contacts by name, email, or company with real-time filtering (debounced 300 ms) | Must Have |
 | CON-05 | Users can filter Contacts by tag | Should Have |
 | CON-06 | Contacts list is paginated (default 20 per page) | Must Have |
@@ -55,11 +59,16 @@ A web-based Customer Relationship Management (CRM) system for small teams (2–1
 
 ### 3.3 Companies
 
+> **Implementation note:** Companies are implemented as a read-only lookup
+> (id + name) used to populate the company picker on the Contact form
+> (CON-08). Full company management (extended fields, create/edit/delete,
+> detail view) is deferred to a future release.
+
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| COM-01 | Users can create a Company with: name, industry, website, phone, billing address | Must Have |
-| COM-02 | Users can edit and delete a Company | Must Have |
-| COM-03 | A Company detail view lists all associated Contacts | Should Have |
+| COM-01 | The system maintains a list of Companies (name) that Users can select when creating or editing a Contact | Must Have |
+| COM-02 | *Deferred* — Users can create, edit, and delete a Company (with industry, website, phone, billing address) | Future |
+| COM-03 | *Deferred* — A Company detail view lists all associated Contacts | Future |
 
 ### 3.4 Deals / Pipeline
 
@@ -81,7 +90,7 @@ A web-based Customer Relationship Management (CRM) system for small teams (2–1
 | ACT-01 | Users can log an Activity of type: Call, Email, Meeting, Note | Must Have |
 | ACT-02 | Each Activity has: type, subject, body/notes, date/time, linked contact (optional), linked deal (optional), author | Must Have |
 | ACT-03 | Activities are displayed as a chronological feed per Contact or Deal | Must Have |
-| ACT-04 | Users can edit and delete their own Activities | Must Have |
+| ACT-04 | Users can delete an Activity. *(Editing an existing Activity, and restricting deletion to the Activity's author, are deferred to a future release.)* | Must Have |
 | ACT-05 | Global activity feed shows all recent activities across contacts/deals (paginated) | Should Have |
 
 ### 3.6 Tasks
@@ -161,7 +170,8 @@ A web-based Customer Relationship Management (CRM) system for small teams (2–1
 | Login / Logout | Yes | Yes |
 | View / Edit own profile | Yes | Yes |
 | Create / Edit / Delete contacts | Yes | Yes |
-| Create / Edit / Delete companies | Yes | Yes |
+| View companies (lookup list) | Yes | Yes |
+| Create / Edit / Delete companies *(Deferred — COM-02)* | — | — |
 | Create / Edit / Delete deals | Yes | Yes |
 | Create / Edit / Delete activities | Yes | Yes |
 | Create / Edit / Delete tasks | Yes | Yes |
