@@ -1,0 +1,109 @@
+<div class="dashboard">
+  <h1 class="dashboard__title">Dashboard</h1>
+
+  @if (loading()) {
+    <div class="dashboard__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="dashboard__error">Something went wrong loading the dashboard.</p>
+  } @else {
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-card__icon metric-card__icon--deals">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div>
+          <div class="metric-card__value">
+            {{ openDealsCount() }} ({{ openPipelineValue() | currency: 'USD' : 'symbol' : '1.0-0' }})
+          </div>
+          <div class="metric-card__label">Open Deals</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-card__icon metric-card__icon--tasks">
+          <mat-icon>event_available</mat-icon>
+        </div>
+        <div>
+          <div class="metric-card__value">{{ tasksDueToday() }}</div>
+          <div class="metric-card__label">My Tasks Due Today</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-card__icon metric-card__icon--contacts">
+          <mat-icon>person_add</mat-icon>
+        </div>
+        <div>
+          <div class="metric-card__value">{{ contactsThisWeek() }}</div>
+          <div class="metric-card__label">Contacts Added This Week</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Pipeline Summary</h2>
+      <div class="pipeline__chart">
+        @for (stage of chartStages(); track stage.stage) {
+          <div class="pipeline__bar-wrapper">
+            <div
+              class="pipeline__bar"
+              [class.pipeline__bar--won]="stage.stage === 'CLOSED_WON'"
+              [style.height.%]="(stage.count / maxStageCount()) * 100"
+            ></div>
+            <span class="pipeline__count">{{ stage.count }}</span>
+            <span class="pipeline__label">{{ stageLabel(stage.stage) }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="panel">
+        <h2>My Tasks</h2>
+        @if (upcomingTasks().length === 0) {
+          <p class="empty">No upcoming tasks.</p>
+        } @else {
+          @for (task of upcomingTasks(); track task.id) {
+            <div class="task-row">
+              <button
+                type="button"
+                class="task-row__check"
+                (click)="completeTask(task)"
+                [attr.aria-label]="'Mark ' + task.title + ' as complete'"
+              >
+                <mat-icon>check_box_outline_blank</mat-icon>
+              </button>
+              <span class="task-row__title">{{ task.title }}</span>
+              @if (task.dueDate) {
+                <span class="due-chip" [class]="'due-chip--' + dueDateClass(task.dueDate)">{{ task.dueDate }}</span>
+              }
+            </div>
+          }
+        }
+        <a routerLink="/tasks" class="panel__link">View all tasks</a>
+      </div>
+
+      <div class="panel">
+        <h2>Recent Activity</h2>
+        @if (recentActivities().length === 0) {
+          <p class="empty">No recent activity.</p>
+        } @else {
+          @for (activity of recentActivities(); track activity.id) {
+            <div class="activity-row">
+              <mat-icon [style.color]="activityColor(activity.type)">{{ activityIcon(activity.type) }}</mat-icon>
+              <div class="activity-row__body">
+                <span class="activity-row__subject">{{ activity.subject }}</span>
+                <span class="activity-row__meta">
+                  {{ activity.contactName ?? activity.dealTitle ?? 'Unlinked' }} ·
+                  {{ activity.createdAt | date: 'short' }}
+                </span>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

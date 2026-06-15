@@ -1,0 +1,80 @@
+<form class="deal-form" [formGroup]="form" (ngSubmit)="submit()">
+  <h2 mat-dialog-title>{{ isEditMode() ? 'Edit Deal' : 'New Deal' }}</h2>
+
+  <mat-dialog-content class="deal-form__content">
+    @if (loading()) {
+      <div class="deal-form__loading">
+        <mat-spinner diameter="40" />
+      </div>
+    } @else {
+      @if (error()) {
+        <p class="deal-form__error">{{ error() }}</p>
+      }
+
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" required />
+        @if (form.controls.title.invalid && form.controls.title.touched) {
+          <mat-error>Title is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Value ($)</mat-label>
+        <input matInput type="number" min="0" formControlName="value" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Stage</mat-label>
+        <mat-select formControlName="stage">
+          @for (option of stageOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Close Date</mat-label>
+        <input matInput type="date" formControlName="closeDate" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Contact</mat-label>
+        <input matInput [formControl]="contactInput" [matAutocomplete]="contactAuto" />
+        <mat-autocomplete #contactAuto="matAutocomplete">
+          @for (contact of filteredContacts(); track contact.id) {
+            <mat-option [value]="contact.firstName + ' ' + contact.lastName">
+              {{ contact.firstName }} {{ contact.lastName }}
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Owner</mat-label>
+        <mat-select formControlName="ownerId">
+          @for (user of users(); track user.id) {
+            <mat-option [value]="user.id">{{ user.firstName }} {{ user.lastName }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.ownerId.invalid && form.controls.ownerId.touched) {
+          <mat-error>Owner is required</mat-error>
+        }
+      </mat-form-field>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    @if (isEditMode()) {
+      <button mat-stroked-button type="button" class="deal-form__delete" (click)="delete()">Delete</button>
+    }
+    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving() || loading()">
+      @if (saving()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Save
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,184 @@
+<div class="contact-detail">
+  @if (loading()) {
+    <div class="contact-detail__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error() || !contact()) {
+    <p class="contact-detail__error">Something went wrong loading this contact.</p>
+  } @else {
+    @if (contact(); as c) {
+      <div class="contact-detail__grid">
+        <div class="contact-detail__main">
+          <div class="contact-detail__header">
+            <app-avatar [firstName]="c.firstName" [lastName]="c.lastName" [size]="80" />
+
+            <div class="contact-detail__identity">
+              @if (editingName()) {
+                <form class="contact-detail__inline-form" [formGroup]="nameForm" (ngSubmit)="saveName()">
+                  <input
+                    class="contact-detail__inline-input contact-detail__inline-input--name"
+                    formControlName="firstName"
+                    aria-label="First name"
+                  />
+                  <input
+                    class="contact-detail__inline-input contact-detail__inline-input--name"
+                    formControlName="lastName"
+                    aria-label="Last name"
+                  />
+                  <button mat-icon-button type="submit" [disabled]="savingInline()" aria-label="Save name">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" (click)="cancelEditName()" aria-label="Cancel editing name">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </form>
+              } @else {
+                <h1
+                  class="contact-detail__name"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Edit name"
+                  (click)="startEditName()"
+                  (keydown.enter)="startEditName()"
+                >
+                  {{ c.firstName }} {{ c.lastName }}
+                  <mat-icon class="contact-detail__edit-icon">edit</mat-icon>
+                </h1>
+              }
+
+              @if (editingTitle()) {
+                <form class="contact-detail__inline-form" (ngSubmit)="saveTitle()">
+                  <input
+                    class="contact-detail__inline-input"
+                    [formControl]="titleControl"
+                    aria-label="Job title"
+                    placeholder="Job title"
+                  />
+                  <button mat-icon-button type="submit" [disabled]="savingInline()" aria-label="Save job title">
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" (click)="cancelEditTitle()" aria-label="Cancel editing job title">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </form>
+              } @else {
+                <p
+                  class="contact-detail__subtitle"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Edit job title"
+                  (click)="startEditTitle()"
+                  (keydown.enter)="startEditTitle()"
+                >
+                  {{ c.title ?? 'Add a job title' }}
+                  @if (c.companyName) {
+                    <span> · {{ c.companyName }}</span>
+                  }
+                  <mat-icon class="contact-detail__edit-icon">edit</mat-icon>
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="contact-detail__actions">
+            <button mat-stroked-button type="button" (click)="edit()">
+              <mat-icon>edit</mat-icon> Edit
+            </button>
+            <button mat-stroked-button type="button" (click)="logActivity()">
+              <mat-icon>add_comment</mat-icon> Log Activity
+            </button>
+            <button mat-stroked-button type="button" (click)="addTask()">
+              <mat-icon>add_task</mat-icon> Add Task
+            </button>
+            <button mat-stroked-button type="button" class="contact-detail__delete" (click)="delete()">
+              <mat-icon>delete</mat-icon> Delete
+            </button>
+          </div>
+
+          <div class="contact-detail__info-grid">
+            <div class="contact-detail__info-item">
+              <span class="contact-detail__info-label">Email</span>
+              @if (c.email) {
+                <a [href]="'mailto:' + c.email">{{ c.email }}</a>
+              } @else {
+                <span>&mdash;</span>
+              }
+            </div>
+
+            <div class="contact-detail__info-item">
+              <span class="contact-detail__info-label">Phone</span>
+              <span>{{ c.phone ?? '—' }}</span>
+            </div>
+
+            <div class="contact-detail__info-item">
+              <span class="contact-detail__info-label">Owner</span>
+              <div class="contact-detail__owner">
+                <app-avatar [firstName]="owner().first" [lastName]="owner().last" [size]="24" />
+                <span>{{ c.ownerName }}</span>
+              </div>
+            </div>
+
+            <div class="contact-detail__info-item">
+              <span class="contact-detail__info-label">Created</span>
+              <span>{{ c.createdAt | date: 'mediumDate' }}</span>
+            </div>
+
+            <div class="contact-detail__info-item contact-detail__info-item--tags">
+              <span class="contact-detail__info-label">Tags</span>
+              <div class="contact-detail__tags">
+                @for (tag of c.tags; track tag.id) {
+                  <app-tag-chip [tag]="tag" />
+                } @empty {
+                  <span>&mdash;</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-detail__section">
+            <h2>Linked Deals</h2>
+            @if (linkedDeals().length === 0) {
+              <p class="contact-detail__empty">No deals linked to this contact.</p>
+            } @else {
+              <div class="contact-detail__deals">
+                @for (deal of linkedDeals(); track deal.id) {
+                  <div class="deal-card">
+                    <span class="deal-card__stage" [style.background-color]="stageColor(deal.stage)">
+                      {{ stageLabel(deal.stage) }}
+                    </span>
+                    <span class="deal-card__title">{{ deal.title }}</span>
+                    <span class="deal-card__value">{{ deal.value | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="contact-detail__activity">
+          <div class="contact-detail__activity-header">
+            <h2>Activity Feed</h2>
+            <button mat-flat-button color="primary" type="button" (click)="logActivity()">Log Activity</button>
+          </div>
+
+          @if (activities().length === 0) {
+            <p class="contact-detail__empty">No activity yet.</p>
+          } @else {
+            @for (activity of activities(); track activity.id) {
+              <div class="activity-item">
+                <mat-icon [style.color]="activityColor(activity.type)">{{ activityIcon(activity.type) }}</mat-icon>
+                <div class="activity-item__body">
+                  <span class="activity-item__subject">{{ activity.subject }}</span>
+                  @if (activity.body) {
+                    <p class="activity-item__notes">{{ activity.body }}</p>
+                  }
+                  <span class="activity-item__meta">{{ activity.createdByName }} &middot; {{ activity.createdAt | date: 'short' }}</span>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

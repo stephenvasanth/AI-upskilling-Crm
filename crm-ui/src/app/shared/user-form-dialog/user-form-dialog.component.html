@@ -1,0 +1,70 @@
+<form class="user-form" [formGroup]="form" (ngSubmit)="submit()">
+  <h2 mat-dialog-title>{{ isEditMode() ? 'Edit User' : 'Invite User' }}</h2>
+
+  <mat-dialog-content class="user-form__content">
+    @if (error()) {
+      <p class="user-form__error">{{ error() }}</p>
+    }
+
+    <div class="user-form__row">
+      <mat-form-field>
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" required />
+        @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+          <mat-error>First name is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" required />
+        @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+          <mat-error>Last name is required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" required />
+      @if (form.controls.email.hasError('email')) {
+        <mat-error>Enter a valid email address</mat-error>
+      } @else if (form.controls.email.invalid && form.controls.email.touched) {
+        <mat-error>Email is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ isEditMode() ? 'New Password (optional)' : 'Password' }}</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (form.controls.password.hasError('minlength')) {
+        <mat-error>Password must be at least 8 characters</mat-error>
+      } @else if (form.controls.password.invalid && form.controls.password.touched) {
+        <mat-error>Password is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="USER">User</mat-option>
+        <mat-option value="ADMIN">Admin</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    @if (isEditMode()) {
+      <mat-checkbox formControlName="active">Active</mat-checkbox>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+      @if (saving()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Save
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,35 @@
+<div class="tags">
+  <div class="tags__header">
+    <h1 class="tags__title">Tags</h1>
+    <button mat-flat-button color="primary" type="button" (click)="newTag()">
+      <mat-icon>add</mat-icon>
+      New Tag
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="tags__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="tags__error">Something went wrong loading tags.</p>
+  } @else if (tags().length === 0) {
+    <div class="tags__empty">
+      <mat-icon class="tags__empty-icon">sell</mat-icon>
+      <h2>No tags yet</h2>
+      <p>Create your first tag to start organizing contacts.</p>
+    </div>
+  } @else {
+    <ul class="tags-list">
+      @for (tag of tags(); track tag.id) {
+        <li class="tags-list__row">
+          <span class="tags-list__swatch" [style.background-color]="tag.color"></span>
+          <span class="tags-list__name">{{ tag.name }}</span>
+          <button mat-icon-button type="button" (click)="deleteTag(tag)" aria-label="Delete tag">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

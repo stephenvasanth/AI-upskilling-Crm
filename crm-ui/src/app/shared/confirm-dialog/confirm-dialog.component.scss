@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  max-width: 400px;
+}
+
+mat-dialog-content {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.confirm-dialog__confirm {
+  background-color: var(--color-danger);
+  color: white;
+}

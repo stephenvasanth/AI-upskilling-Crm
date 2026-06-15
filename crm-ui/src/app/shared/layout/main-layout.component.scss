@@ -1,0 +1,17 @@
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.layout__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+  background-color: var(--color-background);
+}
+
+.layout__content > * {
+  display: block;
+  max-width: 1400px;
+  margin: 0 auto;
+}

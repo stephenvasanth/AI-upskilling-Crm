@@ -1,0 +1,26 @@
+.user-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.user-form__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.user-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.user-form__error {
+  margin: 0;
+  color: var(--color-danger);
+}

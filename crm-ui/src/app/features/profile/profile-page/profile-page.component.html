@@ -1,0 +1,89 @@
+<div class="profile-page">
+  <h1 class="profile-page__title">Profile</h1>
+
+  @if (loading()) {
+    <div class="profile-page__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (!profile()) {
+    <p class="profile-page__error">{{ error() }}</p>
+  } @else {
+    @if (profile(); as p) {
+      <div class="profile-card">
+        <div class="profile-card__header">
+          <app-avatar [firstName]="p.firstName" [lastName]="p.lastName" [size]="80" />
+          <div class="profile-card__identity">
+            <h2 class="profile-card__name">{{ p.firstName }} {{ p.lastName }}</h2>
+            <span class="role-badge" [class.role-badge--admin]="p.role === 'ADMIN'">{{ p.role }}</span>
+          </div>
+        </div>
+
+        <dl class="profile-card__meta">
+          <div class="profile-card__meta-item">
+            <dt>Email</dt>
+            <dd>{{ p.email }}</dd>
+          </div>
+          <div class="profile-card__meta-item">
+            <dt>Joined</dt>
+            <dd>{{ p.createdAt | date: 'mediumDate' }}</dd>
+          </div>
+        </dl>
+
+        @if (error()) {
+          <p class="profile-card__error">{{ error() }}</p>
+        }
+        @if (success()) {
+          <p class="profile-card__success">Profile updated.</p>
+        }
+
+        <form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
+          <div class="profile-form__row">
+            <mat-form-field>
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" required />
+              @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+                <mat-error>First name is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" required />
+              @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+                <mat-error>Last name is required</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="profile-form__row">
+            <mat-form-field>
+              <mat-label>New Password (optional)</mat-label>
+              <input matInput type="password" formControlName="password" />
+              @if (form.controls.password.hasError('minlength')) {
+                <mat-error>Password must be at least 8 characters</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Confirm Password</mat-label>
+              <input matInput type="password" formControlName="confirmPassword" />
+              @if (form.hasError('passwordMismatch') && form.controls.confirmPassword.touched) {
+                <mat-error>Passwords do not match</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="profile-form__actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+              @if (saving()) {
+                <mat-spinner diameter="20" />
+              } @else {
+                Save Changes
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+  }
+</div>

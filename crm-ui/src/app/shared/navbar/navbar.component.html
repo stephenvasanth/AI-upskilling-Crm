@@ -1,0 +1,78 @@
+<nav class="sidebar">
+  <div class="sidebar__brand">
+    <mat-icon>hub</mat-icon>
+    <span>CRM</span>
+  </div>
+
+  <ul class="sidebar__nav">
+    <li>
+      <a
+        routerLink="/"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="sidebar__link"
+      >
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/contacts" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <mat-icon>people</mat-icon>
+        <span>Contacts</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/deals" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <mat-icon>view_kanban</mat-icon>
+        <span>Deals</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/activities" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <mat-icon>history</mat-icon>
+        <span>Activities</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/tasks" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <mat-icon>checklist</mat-icon>
+        <span>Tasks</span>
+      </a>
+    </li>
+  </ul>
+
+  @if (isAdmin()) {
+    <div class="sidebar__section-label">Admin</div>
+    <ul class="sidebar__nav">
+      <li>
+        <a routerLink="/users" routerLinkActive="sidebar__link--active" class="sidebar__link">
+          <mat-icon>manage_accounts</mat-icon>
+          <span>Users</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/tags" routerLinkActive="sidebar__link--active" class="sidebar__link">
+          <mat-icon>sell</mat-icon>
+          <span>Tags</span>
+        </a>
+      </li>
+    </ul>
+  }
+
+  <div class="sidebar__footer">
+    @if (currentUser(); as user) {
+      <a routerLink="/profile" routerLinkActive="sidebar__user--active" class="sidebar__user">
+        <span class="sidebar__avatar">{{ initials() }}</span>
+        <span class="sidebar__user-info">
+          <span class="sidebar__user-name">{{ user.firstName }} {{ user.lastName }}</span>
+          <span class="sidebar__user-role">{{ user.role }}</span>
+        </span>
+      </a>
+    }
+    <button type="button" class="sidebar__logout" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </div>
+</nav>

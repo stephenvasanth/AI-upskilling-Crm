@@ -1,0 +1,141 @@
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.activity-feed__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.activity-feed__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.activity-feed__filters {
+  display: flex;
+  gap: var(--space-3);
+
+  mat-form-field {
+    width: 200px;
+  }
+}
+
+.activity-feed__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+
+.activity-feed__error {
+  color: var(--color-danger);
+}
+
+.activity-feed__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-12) 0;
+  text-align: center;
+  color: var(--color-text-secondary);
+
+  h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+}
+
+.activity-feed__empty-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--color-text-disabled);
+}
+
+.activity-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.activity-card__icon {
+  flex-shrink: 0;
+}
+
+.activity-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.activity-card__subject {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.activity-card__notes {
+  margin: 0;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.activity-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.activity-card__chip {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.activity-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.activity-card__date {
+  margin-left: auto;
+}
+
+.activity-card__delete {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.activity-card:hover .activity-card__delete,
+.activity-card:focus-within .activity-card__delete {
+  opacity: 1;
+}

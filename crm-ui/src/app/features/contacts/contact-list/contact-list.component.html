@@ -1,0 +1,105 @@
+<div class="contacts">
+  <div class="contacts__header">
+    <h1 class="contacts__title">Contacts</h1>
+    <div class="contacts__header-actions">
+      <mat-form-field class="contacts__search" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Search contacts" [formControl]="searchControl" />
+        @if (searchControl.value) {
+          <button matSuffix mat-icon-button type="button" aria-label="Clear search" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+      <a routerLink="/contacts/new" mat-flat-button color="primary">
+        <mat-icon>add</mat-icon>
+        New Contact
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="contacts__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="contacts__error">Something went wrong loading contacts.</p>
+  } @else if (contacts().length === 0) {
+    <div class="contacts__empty">
+      <mat-icon class="contacts__empty-icon">people_outline</mat-icon>
+      <h2>No contacts yet</h2>
+      <p>Get started by adding your first contact.</p>
+      <a routerLink="/contacts/new" mat-flat-button color="primary">Add your first contact</a>
+    </div>
+  } @else {
+    <table class="contacts-table">
+      <thead>
+        <tr>
+          <th class="contacts-table__avatar-col"></th>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Tags</th>
+          <th>Owner</th>
+          <th class="contacts-table__actions-col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (contact of contacts(); track contact.id) {
+          <tr class="contacts-table__row" (click)="openContact(contact)">
+            <td>
+              <app-avatar [firstName]="contact.firstName" [lastName]="contact.lastName" [size]="32" />
+            </td>
+            <td>
+              <a [routerLink]="['/contacts', contact.id]" (click)="$event.stopPropagation()">
+                {{ contact.firstName }} {{ contact.lastName }}
+              </a>
+            </td>
+            <td>{{ contact.companyName ?? '—' }}</td>
+            <td>
+              @if (contact.email) {
+                <a [href]="'mailto:' + contact.email" (click)="$event.stopPropagation()">{{ contact.email }}</a>
+              } @else {
+                —
+              }
+            </td>
+            <td>{{ contact.phone ?? '—' }}</td>
+            <td>
+              <div class="contacts-table__tags">
+                @for (tag of visibleTags(contact); track tag.id) {
+                  <app-tag-chip [tag]="tag" />
+                }
+                @if (overflowCount(contact) > 0) {
+                  <span class="contacts-table__tag-overflow">+{{ overflowCount(contact) }}</span>
+                }
+              </div>
+            </td>
+            <td>
+              <div class="contacts-table__owner">
+                <app-avatar [firstName]="ownerName(contact).first" [lastName]="ownerName(contact).last" [size]="24" />
+                <span>{{ contact.ownerName }}</span>
+              </div>
+            </td>
+            <td class="contacts-table__actions">
+              <button mat-icon-button type="button" aria-label="Edit contact" (click)="edit(contact, $event)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button type="button" aria-label="Delete contact" (click)="delete(contact, $event)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageIndex]="page()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+    />
+  }
+</div>

@@ -1,0 +1,40 @@
+.tag-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tag-form__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.tag-form__error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.tag-form__color-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.tag-form__swatch {
+  width: 40px;
+  height: 40px;
+  margin-top: var(--space-1);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}

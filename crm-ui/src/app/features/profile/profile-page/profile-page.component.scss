@@ -1,0 +1,123 @@
+.profile-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.profile-page__title {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.profile-page__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+
+.profile-page__error {
+  color: var(--color-danger);
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.profile-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.profile-card__name {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.profile-card__meta {
+  display: flex;
+  gap: var(--space-8);
+  margin: 0;
+}
+
+.profile-card__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  dt {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+}
+
+.profile-card__error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.profile-card__success {
+  margin: 0;
+  color: var(--color-success);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.profile-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.profile-form__actions {
+  display: flex;
+  justify-content: flex-end;
+
+  button mat-spinner {
+    display: inline-block;
+  }
+}
+
+.role-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.role-badge--admin {
+  background-color: var(--color-primary);
+  color: #fff;
+}

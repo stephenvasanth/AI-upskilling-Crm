@@ -1,0 +1,45 @@
+<form class="tag-form" [formGroup]="form" (ngSubmit)="submit()">
+  <h2 mat-dialog-title>New Tag</h2>
+
+  <mat-dialog-content class="tag-form__content">
+    @if (error()) {
+      <p class="tag-form__error">{{ error() }}</p>
+    }
+
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required maxlength="50" />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="tag-form__color-row">
+      <input
+        type="color"
+        class="tag-form__swatch"
+        aria-label="Tag colour"
+        [value]="form.controls.color.value"
+        (input)="onSwatchChange($event)"
+      />
+      <mat-form-field>
+        <mat-label>Colour</mat-label>
+        <input matInput formControlName="color" placeholder="#4F46E5" />
+        @if (form.controls.color.invalid && form.controls.color.touched) {
+          <mat-error>Enter a valid hex colour, e.g. #4F46E5</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+      @if (saving()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Save
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,32 @@
+.deal-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.deal-form__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.deal-form__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+
+.deal-form__error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.deal-form__delete {
+  margin-right: auto;
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}

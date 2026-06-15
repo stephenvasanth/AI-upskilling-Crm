@@ -1,0 +1,66 @@
+<form class="activity-form" [formGroup]="form" (ngSubmit)="submit()">
+  <h2 mat-dialog-title>Log Activity</h2>
+
+  <mat-dialog-content class="activity-form__content">
+    @if (error()) {
+      <p class="activity-form__error">{{ error() }}</p>
+    }
+
+    <mat-button-toggle-group class="activity-form__types" formControlName="type" aria-label="Activity type">
+      @for (type of activityTypes; track type.value) {
+        <mat-button-toggle [value]="type.value">
+          <mat-icon>{{ type.icon }}</mat-icon>
+          {{ type.label }}
+        </mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <mat-form-field>
+      <mat-label>Subject</mat-label>
+      <input matInput formControlName="subject" required />
+      @if (form.controls.subject.invalid && form.controls.subject.touched) {
+        <mat-error>Subject is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="body" rows="6"></textarea>
+    </mat-form-field>
+
+    @if (showLinkPickers) {
+      <mat-form-field>
+        <mat-label>Contact</mat-label>
+        <input matInput [formControl]="contactInput" [matAutocomplete]="contactAuto" placeholder="Search contacts" />
+        <mat-autocomplete #contactAuto="matAutocomplete">
+          @for (contact of filteredContacts(); track contact.id) {
+            <mat-option [value]="contact.firstName + ' ' + contact.lastName">
+              {{ contact.firstName }} {{ contact.lastName }}
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Deal</mat-label>
+        <input matInput [formControl]="dealInput" [matAutocomplete]="dealAuto" placeholder="Search deals" />
+        <mat-autocomplete #dealAuto="matAutocomplete">
+          @for (deal of filteredDeals(); track deal.id) {
+            <mat-option [value]="deal.title">{{ deal.title }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+      @if (saving()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Save
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

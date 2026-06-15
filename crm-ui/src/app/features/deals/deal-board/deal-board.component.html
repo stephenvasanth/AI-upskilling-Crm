@@ -1,0 +1,60 @@
+<div class="deal-board">
+  <div class="deal-board__header">
+    <h1>Pipeline</h1>
+    <button mat-flat-button color="primary" type="button" (click)="newDeal()">
+      <mat-icon>add</mat-icon> New Deal
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="deal-board__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="deal-board__error">Something went wrong loading the pipeline.</p>
+  } @else {
+    <div class="deal-board__columns" cdkDropListGroup>
+      @for (stage of pipeline(); track stage.stage) {
+        <div class="deal-column" [class.deal-column--muted]="stage.stage === 'CLOSED_LOST'">
+          <div class="deal-column__header" [style.border-top-color]="stageColor(stage.stage)">
+            <span class="deal-column__title">{{ stageLabel(stage.stage) }}</span>
+            <span class="deal-column__meta">
+              {{ stage.count }} &middot; {{ stage.totalValue | currency: 'USD' : 'symbol' : '1.0-0' }}
+            </span>
+          </div>
+
+          <div
+            class="deal-column__list"
+            cdkDropList
+            [cdkDropListData]="stage.deals"
+            (cdkDropListDropped)="drop($event, stage.stage)"
+          >
+            @for (deal of stage.deals; track deal.id) {
+              <div class="deal-card" cdkDrag (click)="editDeal(deal)">
+                <span class="deal-card__title">{{ deal.title }}</span>
+
+                @if (deal.contactName) {
+                  <div class="deal-card__contact">
+                    <app-avatar [firstName]="contactName(deal).first" [lastName]="contactName(deal).last" [size]="24" />
+                    <span>{{ deal.contactName }}</span>
+                  </div>
+                }
+
+                <span class="deal-card__value">{{ deal.value | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+
+                @if (deal.closeDate) {
+                  <div class="deal-card__close-date" [class.deal-card__close-date--overdue]="isOverdue(deal.closeDate)">
+                    <mat-icon>event</mat-icon>
+                    <span>{{ deal.closeDate | date: 'mediumDate' }}</span>
+                  </div>
+                }
+              </div>
+            } @empty {
+              <p class="deal-column__empty">No deals</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

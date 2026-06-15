@@ -1,0 +1,33 @@
+.activity-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.activity-form__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.activity-form__error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.activity-form__types {
+  display: flex;
+
+  mat-button-toggle {
+    flex: 1;
+  }
+
+  mat-icon {
+    margin-right: var(--space-1);
+    vertical-align: middle;
+  }
+}

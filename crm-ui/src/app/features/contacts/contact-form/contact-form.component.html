@@ -1,0 +1,114 @@
+<div class="contact-form-page">
+  <h1 class="contact-form-page__title">{{ isEditMode() ? 'Edit Contact' : 'New Contact' }}</h1>
+
+  @if (loading()) {
+    <div class="contact-form-page__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else {
+    @if (error()) {
+      <p class="contact-form-page__error">{{ error() }}</p>
+    }
+
+    <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="contact-form__row">
+        <mat-form-field>
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" required />
+          @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+            <mat-error>First name is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" required />
+          @if (form.controls.lastName.invalid && form.controls.lastName.touched) {
+            <mat-error>Last name is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+        @if (form.controls.email.hasError('email')) {
+          <mat-error>Enter a valid email address</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Job Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Company</mat-label>
+        <input matInput [formControl]="companyInput" [matAutocomplete]="companyAuto" />
+        <mat-autocomplete #companyAuto="matAutocomplete">
+          @for (company of filteredCompanies(); track company.id) {
+            <mat-option [value]="company.name">{{ company.name }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Owner</mat-label>
+        <mat-select formControlName="ownerId">
+          @for (user of users(); track user.id) {
+            <mat-option [value]="user.id">{{ user.firstName }} {{ user.lastName }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.ownerId.invalid && form.controls.ownerId.touched) {
+          <mat-error>Owner is required</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="contact-form__field">
+        <label class="contact-form__label" id="contact-form-tags-label">Tags</label>
+        <div class="contact-form__tags" aria-labelledby="contact-form-tags-label">
+          @for (tag of selectedTags(); track tag.id) {
+            <span class="contact-form__tag">
+              <app-tag-chip [tag]="tag" />
+              <button
+                mat-icon-button
+                type="button"
+                class="contact-form__tag-remove"
+                [attr.aria-label]="'Remove ' + tag.name"
+                (click)="removeTag(tag.id)"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </span>
+          }
+        </div>
+        @if (availableTags().length > 0) {
+          <mat-form-field class="contact-form__add-tag">
+            <mat-label>Add tag</mat-label>
+            <mat-select #addTagSelect (selectionChange)="addTag($event.value); addTagSelect.value = null">
+              @for (tag of availableTags(); track tag.id) {
+                <mat-option [value]="tag.id">{{ tag.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+      </div>
+
+      <div class="contact-form__actions">
+        <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+          @if (saving()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Save
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

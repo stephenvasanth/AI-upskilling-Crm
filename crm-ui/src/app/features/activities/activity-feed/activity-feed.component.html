@@ -1,0 +1,103 @@
+<div class="activity-feed">
+  <div class="activity-feed__header">
+    <h1 class="activity-feed__title">Activities</h1>
+    <button mat-flat-button color="primary" type="button" (click)="logActivity()">
+      <mat-icon>add</mat-icon>
+      Log Activity
+    </button>
+  </div>
+
+  <div class="activity-feed__filters">
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Type</mat-label>
+      <mat-select [formControl]="typeFilter">
+        <mat-option [value]="null">All</mat-option>
+        @for (option of activityTypeOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Contact</mat-label>
+      <mat-select [formControl]="contactFilter">
+        <mat-option [value]="null">All Contacts</mat-option>
+        @for (contact of contacts(); track contact.id) {
+          <mat-option [value]="contact.id">{{ contact.firstName }} {{ contact.lastName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (loading()) {
+    <div class="activity-feed__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="activity-feed__error">Something went wrong loading activities.</p>
+  } @else if (filteredActivities().length === 0) {
+    <div class="activity-feed__empty">
+      <mat-icon class="activity-feed__empty-icon">history</mat-icon>
+      <h2>No activity yet</h2>
+      <p>Log a call, email, meeting, or note to get started.</p>
+    </div>
+  } @else {
+    @for (activity of filteredActivities(); track activity.id) {
+      <div class="activity-card">
+        <mat-icon class="activity-card__icon" [style.color]="activityColor(activity.type)">
+          {{ activityIcon(activity.type) }}
+        </mat-icon>
+
+        <div class="activity-card__body">
+          <span class="activity-card__subject">{{ activity.subject }}</span>
+          @if (activity.body) {
+            <p class="activity-card__notes">{{ activity.body }}</p>
+          }
+
+          @if (activity.contactId || activity.dealTitle) {
+            <div class="activity-card__chips">
+              @if (activity.contactId) {
+                <a class="activity-card__chip" [routerLink]="['/contacts', activity.contactId]">
+                  {{ activity.contactName }}
+                </a>
+              }
+              @if (activity.dealTitle) {
+                <span class="activity-card__chip">{{ activity.dealTitle }}</span>
+              }
+            </div>
+          }
+
+          <div class="activity-card__meta">
+            <app-avatar [firstName]="author(activity).first" [lastName]="author(activity).last" [size]="24" />
+            <span>{{ activity.createdByName }}</span>
+            <span class="activity-card__date">
+              @if (isToday(activity.createdAt)) {
+                Today at {{ activity.createdAt | date: 'shortTime' }}
+              } @else {
+                {{ activity.createdAt | date: 'MMM d' }}
+              }
+            </span>
+          </div>
+        </div>
+
+        <button
+          mat-icon-button
+          type="button"
+          class="activity-card__delete"
+          aria-label="Delete activity"
+          (click)="delete(activity)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageIndex]="page()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+    />
+  }
+</div>

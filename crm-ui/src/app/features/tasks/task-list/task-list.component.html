@@ -1,0 +1,88 @@
+<div class="task-list">
+  <div class="task-list__header">
+    <h1 class="task-list__title">Tasks</h1>
+    <button mat-flat-button color="primary" type="button" (click)="addTask()">
+      <mat-icon>add</mat-icon>
+      New Task
+    </button>
+  </div>
+
+  <div class="task-list__tabs">
+    @for (tab of filterTabs; track tab.value) {
+      <button
+        type="button"
+        class="task-list__tab"
+        [class.task-list__tab--active]="activeFilter() === tab.value"
+        (click)="selectFilter(tab.value)"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="task-list__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="task-list__error">Something went wrong loading tasks.</p>
+  } @else if (filteredTasks().length === 0) {
+    <div class="task-list__empty">
+      <mat-icon class="task-list__empty-icon">task_alt</mat-icon>
+      <h2>No tasks here</h2>
+      <p>You're all caught up.</p>
+    </div>
+  } @else {
+    @for (task of filteredTasks(); track task.id) {
+      <div class="task-row" [class.task-row--completed]="task.completed">
+        <button
+          type="button"
+          class="task-row__check"
+          (click)="toggleTask(task)"
+          [attr.aria-label]="task.completed ? 'Mark ' + task.title + ' as incomplete' : 'Mark ' + task.title + ' as complete'"
+        >
+          <mat-icon>{{ task.completed ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+        </button>
+
+        <span class="task-row__title">{{ task.title }}</span>
+
+        @if (task.contactId) {
+          <a class="task-row__chip" [routerLink]="['/contacts', task.contactId]">{{ task.contactName }}</a>
+        } @else if (task.dealTitle) {
+          <span class="task-row__chip">{{ task.dealTitle }}</span>
+        }
+
+        <div class="task-row__assignee">
+          <app-avatar [firstName]="assignee(task).first" [lastName]="assignee(task).last" [size]="24" />
+          <span>{{ task.assigneeName }}</span>
+        </div>
+
+        @if (task.dueDate) {
+          <span class="due-chip" [class]="'due-chip--' + dueDateClass(task.dueDate)">{{ task.dueDate }}</span>
+        }
+
+        <button mat-icon-button type="button" [matMenuTriggerFor]="actions" aria-label="Task actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #actions="matMenu">
+          <button mat-menu-item type="button" (click)="editTask(task)">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item type="button" (click)="deleteTask(task)">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+        </mat-menu>
+      </div>
+    }
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageIndex]="page()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+    />
+  }
+</div>

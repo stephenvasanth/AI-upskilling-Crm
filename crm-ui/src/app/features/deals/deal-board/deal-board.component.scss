@@ -1,0 +1,142 @@
+.deal-board {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.deal-board__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+
+  h1 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+.deal-board__loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+
+.deal-board__error {
+  color: var(--color-danger);
+}
+
+.deal-board__columns {
+  display: flex;
+  gap: var(--space-4);
+  flex: 1;
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.deal-column {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 280px;
+  background-color: #f1f5f9;
+  border-radius: var(--radius-md);
+  max-height: 100%;
+
+  &--muted {
+    opacity: 0.6;
+  }
+}
+
+.deal-column__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-top: 3px solid;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.deal-column__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.deal-column__meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.deal-column__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-3) var(--space-3);
+  overflow-y: auto;
+  min-height: 60px;
+
+  &.cdk-drop-list-receiving {
+    outline: 2px dashed var(--color-primary);
+    outline-offset: -2px;
+  }
+}
+
+.deal-column__empty {
+  margin: 0;
+  padding: var(--space-3) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.deal-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.deal-card__title {
+  font-weight: var(--font-weight-semibold);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.deal-card__contact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.deal-card__value {
+  align-self: flex-end;
+  font-weight: var(--font-weight-semibold);
+}
+
+.deal-card__close-date {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &--overdue {
+    color: var(--color-danger);
+  }
+}

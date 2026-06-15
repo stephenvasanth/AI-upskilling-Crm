@@ -1,0 +1,74 @@
+<div class="users">
+  <div class="users__header">
+    <h1 class="users__title">Team Members</h1>
+    <button mat-flat-button color="primary" type="button" (click)="inviteUser()">
+      <mat-icon>person_add</mat-icon>
+      Invite User
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="users__loading">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else if (error()) {
+    <p class="users__error">Something went wrong loading users.</p>
+  } @else if (users().length === 0) {
+    <div class="users__empty">
+      <mat-icon class="users__empty-icon">people_outline</mat-icon>
+      <h2>No team members yet</h2>
+      <p>Invite your first team member to get started.</p>
+    </div>
+  } @else {
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th class="users-table__avatar-col"></th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th class="users-table__actions-col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr class="users-table__row">
+            <td>
+              <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [size]="32" />
+            </td>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>
+              <a [href]="'mailto:' + user.email">{{ user.email }}</a>
+            </td>
+            <td>
+              <span class="role-badge" [class.role-badge--admin]="user.role === 'ADMIN'">{{ user.role }}</span>
+            </td>
+            <td>
+              <span class="status-badge" [class.status-badge--inactive]="!user.active">
+                {{ user.active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>{{ user.createdAt | date: 'mediumDate' }}</td>
+            <td class="users-table__actions">
+              <button mat-icon-button type="button" [matMenuTriggerFor]="actions" aria-label="User actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #actions="matMenu">
+                <button mat-menu-item type="button" (click)="editUser(user)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item type="button" (click)="toggleActive(user)">
+                  <mat-icon>{{ user.active ? 'block' : 'check_circle' }}</mat-icon>
+                  <span>{{ user.active ? 'Deactivate' : 'Activate' }}</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
